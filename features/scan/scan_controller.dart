@@ -5,7 +5,7 @@ import 'scan_service.dart';
 Router getScanRouter() {
   final router = Router();
   router.get(
-    '/scan/<cardId>',
+    '/<cardId>',
     ScanService.scanCard,
   );
 
