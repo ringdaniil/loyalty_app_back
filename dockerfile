@@ -7,7 +7,7 @@ RUN dart pub get
 
 COPY . .
 
-RUN dart compile exe main.dart -o bin/server
+RUN mkdir -p bin && dart compile exe main.dart -o bin/server
 
 FROM scratch
 COPY --from=build /runtime/ /
