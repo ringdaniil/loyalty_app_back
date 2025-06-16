@@ -22,9 +22,7 @@ class ScanService {
 
       final newProgressDone = progress.progressDone + 1;
 
-      // Проверка: пора ли повысить уровень карты
-      final bool shouldUpgrade = newProgressDone >= progress.amountToUpgrade &&
-          card.loyalCardLevel.index < LoyalCardLevel.values.length - 1;
+      final bool shouldUpgrade = newProgressDone >= progress.amountToUpgrade;
 
       if (shouldUpgrade) {
         await CardService.upgradeCardLevel(cardId);
