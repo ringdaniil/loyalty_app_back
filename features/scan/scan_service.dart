@@ -5,6 +5,7 @@ import 'package:shelf/shelf.dart';
 import '../../data/db.dart';
 import '../../utils/utils.dart';
 import '../cards/card_model.dart';
+import '../cards/cards_service.dart';
 
 class ScanService {
   static Future<Response> scanCard(Request request, String cardId) async {
@@ -20,37 +21,36 @@ class ScanService {
       final progress = card.cardProgressDetails;
 
       final newProgressDone = progress.progressDone + 1;
-      final newProgressLevel = newProgressDone / progress.amountToUpgrade;
 
-      var newLevel = card.loyalCardLevel;
-      var upgraded = false;
+      // Проверка: пора ли повысить уровень карты
+      final bool shouldUpgrade = newProgressDone >= progress.amountToUpgrade &&
+          card.loyalCardLevel.index < LoyalCardLevel.values.length - 1;
 
-      if (newProgressDone >= progress.amountToUpgrade &&
-          card.loyalCardLevel.index < LoyalCardLevel.values.length - 1) {
-        newLevel = LoyalCardLevel.values[card.loyalCardLevel.index + 1];
-        upgraded = true;
+      if (shouldUpgrade) {
+        await CardService.upgradeCardLevel(cardId);
+
+        return Response.ok(
+          jsonEncode({
+            'message': 'Card upgraded to next level',
+            'isCardScanned': true,
+            'upgraded': true,
+          }),
+          headers: Utils.jsonHeaders,
+        );
       }
 
+      // Иначе — просто увеличить прогресс
       final newProgressDetails = CardProgressDetails(
-        progressDone: upgraded ? 0 : newProgressDone,
-        progressLevel: upgraded ? 0 : newProgressLevel,
-        amountToUpgrade: upgraded
-            ? CardProgressDetails.amountToUpgradeFromLoyalCardValues(newLevel)
-            : progress.amountToUpgrade,
-        description: upgraded
-            ? CardProgressDetails.descriptionFromLoyalCardValues(
-                newLevel,
-                CardProgressDetails.amountToUpgradeFromLoyalCardValues(
-                    newLevel),
-              )
-            : progress.description,
+        progressDone: newProgressDone,
+        progressLevel: newProgressDone / progress.amountToUpgrade,
+        amountToUpgrade: progress.amountToUpgrade,
+        description: progress.description,
       );
 
       await Database.db.collection("cards").update(
         {'cardId': cardId},
         {
           r'$set': {
-            'cardLevel': newLevel.name,
             'cardProgressDetails': newProgressDetails.toJson(),
           }
         },
@@ -59,6 +59,8 @@ class ScanService {
       return Response.ok(
         jsonEncode({
           'message': 'Card scanned successfully',
+          'isCardScanned': true,
+          'upgraded': false,
         }),
         headers: Utils.jsonHeaders,
       );

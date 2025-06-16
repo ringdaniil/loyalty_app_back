@@ -155,6 +155,45 @@ class CardService {
       return Utils.errorResponse(500, "Internal server error");
     }
   }
+
+  static Future<void> upgradeCardLevel(String cardId) async {
+    final cardJson =
+        await Database.db.collection("cards").findOne({'cardId': cardId});
+
+    if (cardJson == null) {
+      throw Exception("Card not found");
+    }
+
+    final card = LoyalCard.fromJson(cardJson);
+    final currentLevel = card.loyalCardLevel;
+
+    if (currentLevel.index >= LoyalCardLevel.values.length - 1) {
+      return;
+    }
+
+    final nextLevel = LoyalCardLevel.values[currentLevel.index + 1];
+
+    final updatedProgress = CardProgressDetails(
+      progressLevel: 0,
+      progressDone: 0,
+      amountToUpgrade:
+          CardProgressDetails.amountToUpgradeFromLoyalCardValues(nextLevel),
+      description: CardProgressDetails.descriptionFromLoyalCardValues(
+        nextLevel,
+        CardProgressDetails.amountToUpgradeFromLoyalCardValues(nextLevel),
+      ),
+    );
+
+    await Database.db.collection("cards").update(
+      {'cardId': cardId},
+      {
+        r'$set': {
+          'cardLevel': nextLevel.name,
+          'cardProgressDetails': updatedProgress.toJson(),
+        }
+      },
+    );
+  }
 }
 
 Future<String> _generateUniqueCardId() async {
