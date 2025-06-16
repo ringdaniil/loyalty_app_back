@@ -135,22 +135,18 @@ class CardService {
       final cardToCompareWith = await Database.db.collection("cards").findOne({
         'cardId': cardId,
       });
-      if (cardProgressDetails ==
-          LoyalCard.fromJson(
-            cardToCompareWith ?? {},
-          ).cardProgressDetails) {
+      final card = LoyalCard.fromJson(cardToCompareWith ?? {});
+      final isEqual = jsonEncode(card.cardProgressDetails.toJson()) ==
+          jsonEncode(cardProgressDetails.toJson());
+
+      if (isEqual) {
         return Response.ok(
-          jsonEncode({
-            'isCardScanned': false,
-          }),
+          jsonEncode({'isCardScanned': false}),
           headers: Utils.jsonHeaders,
         );
       } else {
-        print("DANIK: Вернул true");
         return Response.ok(
-          jsonEncode({
-            'isCardScanned': true,
-          }),
+          jsonEncode({'isCardScanned': true}),
           headers: Utils.jsonHeaders,
         );
       }
