@@ -1,9 +1,9 @@
 import '../users/user_model.dart';
 
 enum LoyalCardLevel {
-  gold,
+  bronze,
   silver,
-  bronze;
+  gold;
 
   String toBeautifulString() {
     switch (this) {

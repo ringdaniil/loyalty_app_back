@@ -167,13 +167,9 @@ class CardService {
     final card = LoyalCard.fromJson(cardJson);
     final currentLevel = card.loyalCardLevel;
 
-    print("DANIK: Current user level: $currentLevel");
-
     if (currentLevel == LoyalCardLevel.gold) {
       return;
     }
-
-    print("DANIK: Current user level index: ${currentLevel.index}");
 
     final nextLevel = LoyalCardLevel.values[currentLevel.index + 1];
 
