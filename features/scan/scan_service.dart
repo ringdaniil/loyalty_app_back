@@ -37,7 +37,6 @@ class ScanService {
         );
       }
 
-      // Иначе — просто увеличить прогресс
       final newProgressDetails = CardProgressDetails(
         progressDone: newProgressDone,
         progressLevel: newProgressDone / progress.amountToUpgrade,

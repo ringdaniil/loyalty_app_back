@@ -167,7 +167,7 @@ class CardService {
     final card = LoyalCard.fromJson(cardJson);
     final currentLevel = card.loyalCardLevel;
 
-    if (currentLevel.index >= LoyalCardLevel.values.length - 1) {
+    if (currentLevel == LoyalCardLevel.gold) {
       return;
     }
 
