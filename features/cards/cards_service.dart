@@ -8,8 +8,7 @@ import '../users/user_model.dart';
 import 'card_model.dart';
 
 class CardService {
-  static const _baseQrUrl =
-      "http://https://loyalty-app-back.onrender.com/scan/";
+  static const _baseQrUrl = "http://loyalty-app-back.onrender.com/scan/";
 
   static Future<Response> createCard(Request request) async {
     try {
