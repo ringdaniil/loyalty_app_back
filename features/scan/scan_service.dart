@@ -18,11 +18,22 @@ class ScanService {
       }
 
       final card = LoyalCard.fromJson(cardJson);
+
+      if (card.loyalCardLevel == LoyalCardLevel.gold) {
+        return Response.ok(
+          jsonEncode({
+            'message': 'Card scanned successfully',
+            'isCardScanned': true,
+          }),
+          headers: Utils.jsonHeaders,
+        );
+      }
       final progress = card.cardProgressDetails;
 
-      final newProgressDone = progress.progressDone + 1;
+      final newProgressDone = (progress.progressDone ?? 0) + 1;
 
-      final bool shouldUpgrade = newProgressDone >= progress.amountToUpgrade;
+      final bool shouldUpgrade =
+          newProgressDone >= (progress.amountToUpgrade ?? 0);
 
       if (shouldUpgrade) {
         await CardService.upgradeCardLevel(cardId);
@@ -39,7 +50,7 @@ class ScanService {
 
       final newProgressDetails = CardProgressDetails(
         progressDone: newProgressDone,
-        progressLevel: newProgressDone / progress.amountToUpgrade,
+        progressLevel: newProgressDone / (progress.amountToUpgrade ?? 0),
         amountToUpgrade: progress.amountToUpgrade,
         description: progress.description,
       );

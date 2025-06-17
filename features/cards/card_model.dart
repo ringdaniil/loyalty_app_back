@@ -116,8 +116,8 @@ class LoyalCard {
 class CardProgressDetails {
   final double progressLevel;
   final String description;
-  final double amountToUpgrade;
-  final double progressDone;
+  final double? amountToUpgrade;
+  final double? progressDone;
 
   CardProgressDetails({
     required this.progressLevel,
@@ -142,13 +142,20 @@ class CardProgressDetails {
       );
 
   static String descriptionFromLoyalCardValues(
-      LoyalCardLevel loyalCardLevel, double amountToUpgrade) {
-    final nextLevel = LoyalCardLevel.values[loyalCardLevel.index + 1];
-    return "You need to scan your QR-code at our shops or cafes $amountToUpgrade times to upgrade to ${nextLevel.toBeautifulString()}";
+      LoyalCardLevel loyalCardLevel, double? amountToUpgrade) {
+    if (loyalCardLevel == LoyalCardLevel.gold) {
+      return "Congratulations, you have the max available card level!}";
+    } else {
+      final nextLevel = LoyalCardLevel.values[loyalCardLevel.index + 1];
+      return "You need to scan your QR-code at our shops or cafes $amountToUpgrade times to upgrade to ${nextLevel.toBeautifulString()}";
+    }
   }
 
-  static double amountToUpgradeFromLoyalCardValues(
+  static double? amountToUpgradeFromLoyalCardValues(
       LoyalCardLevel loyalCardLevel) {
+    if (loyalCardLevel == LoyalCardLevel.gold) {
+      return null;
+    }
     final nextLevel = LoyalCardLevel.values[loyalCardLevel.index + 1];
     return switch (nextLevel) {
       LoyalCardLevel.gold => 30,
