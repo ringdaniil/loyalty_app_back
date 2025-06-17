@@ -28,6 +28,7 @@ class ScanService {
           headers: Utils.jsonHeaders,
         );
       }
+
       final progress = card.cardProgressDetails;
 
       final newProgressDone = (progress.progressDone ?? 0) + 1;

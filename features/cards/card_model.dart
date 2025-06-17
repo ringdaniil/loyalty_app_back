@@ -135,10 +135,10 @@ class CardProgressDetails {
 
   static CardProgressDetails fromJson(Map<String, dynamic> json) =>
       CardProgressDetails(
-        progressLevel: (json['progressLevel'] as num).toDouble(),
+        progressLevel: (json['progressLevel']).toDouble(),
         description: json['description'],
-        amountToUpgrade: (json['amountToUpgrade'] as num).toDouble(),
-        progressDone: (json['progressDone'] as num).toDouble(),
+        amountToUpgrade: (json['amountToUpgrade']).toDouble(),
+        progressDone: (json['progressDone']).toDouble(),
       );
 
   static String descriptionFromLoyalCardValues(
