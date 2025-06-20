@@ -37,6 +37,7 @@ class AuthService {
         phone: phone,
         password: password,
         customerType: CustomerType.fromName(customerType),
+        isPhoneConfirmed: false,
       );
 
       await Database.usersCollection.insertOne(user.toJson());

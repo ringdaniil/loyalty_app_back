@@ -7,12 +7,14 @@ class User {
   final String phone;
   final String password;
   final CustomerType customerType;
+  final bool isPhoneConfirmed;
 
   User({
     required this.id,
     required this.phone,
     required this.password,
     required this.customerType,
+    required this.isPhoneConfirmed,
   });
 
   Map<String, dynamic> toJson() => {
@@ -23,6 +25,7 @@ class User {
           BCrypt.gensalt(),
         ),
         'customerType': customerType.getName(),
+        'isPhoneConfirmed': isPhoneConfirmed,
       };
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -31,6 +34,7 @@ class User {
       phone: json['phone'],
       password: json['password'],
       customerType: CustomerType.fromName(json['customerType']),
+      isPhoneConfirmed: json['isPhoneConfirmed'],
     );
   }
 }
